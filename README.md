@@ -72,7 +72,7 @@ PythonAnywhere deployment steps:
 4. In the PythonAnywhere Web tab, add these environment variables:
    - `DJANGO_SECRET_KEY=<your-secret-key>`
    - `DJANGO_DEBUG=False`
-   - `DJANGO_ALLOWED_HOSTS=<your-username>.pythonanywhere.com`
+   - `DJANGO_ALLOWED_HOSTS=collegeconnect.pythonanywhere.com`
    - any email or database variables your app requires
 5. In the Web tab, set the Working directory to `/home/<your-username>/project` and edit the WSGI file:
    ```python
