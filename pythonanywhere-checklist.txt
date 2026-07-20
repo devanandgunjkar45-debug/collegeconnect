@@ -1,0 +1,42 @@
+PythonAnywhere deployment checklist for CampusConnect
+
+1) Create project folder and clone repository
+
+   mkdir ~/project
+   cd ~/project
+   git clone https://github.com/devanandgunjkar45-debug/collegeconnect.git .
+
+2) Create and activate virtualenv (adjust Python version as needed)
+
+   python3.12 -m venv ~/venv/campusconnect
+   source ~/venv/campusconnect/bin/activate
+   pip install -r ~/project/requirements.txt
+
+3) Configure environment variables in the Web -> "Environment variables" panel
+
+   DJANGO_SECRET_KEY=<your-secret-key>
+   DJANGO_DEBUG=False
+   DJANGO_ALLOWED_HOSTS=collegeconnect.pythonanywhere.com
+   (add EMAIL_ and DB_ variables if required)
+
+4) Configure WSGI and working directory in the Web tab
+
+   - Working directory: /home/<your-username>/project
+   - WSGI file: ensure it sets `DJANGO_SETTINGS_MODULE = 'campusconnect.settings'`
+
+5) Run migrations and collect static files (Bash console)
+
+   cd ~/project
+   source ~/venv/campusconnect/bin/activate
+   python manage.py migrate
+   python manage.py collectstatic --noinput
+
+6) Reload web app from the Web tab
+
+7) Troubleshooting
+
+   - Check the error log in the Web tab for tracebacks.
+   - Verify `DJANGO_ALLOWED_HOSTS` includes your PythonAnywhere domain.
+   - Make sure static files collected to `STATIC_ROOT` are served or use WhiteNoise.
+
+End of checklist
