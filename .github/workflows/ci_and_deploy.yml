@@ -1,0 +1,39 @@
+name: CI & Optional PythonAnywhere Reload
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.12'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run Django checks
+        env:
+          DJANGO_SETTINGS_MODULE: campusconnect.settings
+        run: |
+          python manage.py check
+
+  reload-pythonanywhere:
+    needs: test
+    runs-on: ubuntu-latest
+    if: ${{ secrets.PA_USERNAME && secrets.PA_API_TOKEN }}
+    steps:
+      - name: Reload PythonAnywhere webapp
+        env:
+          PA_USERNAME: ${{ secrets.PA_USERNAME }}
+          PA_API_TOKEN: ${{ secrets.PA_API_TOKEN }}
+        run: |
+          echo "Reloading PythonAnywhere webapp for user $PA_USERNAME"
+          curl -sS -X POST \
+            -H "Authorization: Token $PA_API_TOKEN" \
+            https://www.pythonanywhere.com/api/v0/user/$PA_USERNAME/webapps/$PA_USERNAME.pythonanywhere.com/reload/
