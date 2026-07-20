@@ -11,6 +11,16 @@ PythonAnywhere deployment checklist for CampusConnect
    python3.12 -m venv ~/venv/campusconnect
    source ~/venv/campusconnect/bin/activate
    pip install -r ~/project/requirements.txt
+   
+   Or run the provided setup script from the `deploy/` folder:
+   ```bash
+   # run from a Bash console on PythonAnywhere
+   cd ~
+   mkdir -p project
+   curl -sSfL https://raw.githubusercontent.com/devanandgunjkar45-debug/collegeconnect/main/deploy/pythonanywhere_setup.sh -o pythonanywhere_setup.sh
+   chmod +x pythonanywhere_setup.sh
+   ./pythonanywhere_setup.sh <your-username> 3.12
+   ```
 
 3) Configure environment variables in the Web -> "Environment variables" panel
 
