@@ -40,6 +40,10 @@ MIDDLEWARE = [
 ]
 
 USE_WHITENOISE = os.getenv('DJANGO_USE_WHITENOISE', 'False') == 'True'
+# Enable WhiteNoise automatically in production (when DEBUG is False)
+if not DEBUG:
+    USE_WHITENOISE = True
+
 if USE_WHITENOISE:
     MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 
