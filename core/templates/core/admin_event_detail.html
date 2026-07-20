@@ -1,0 +1,130 @@
+{% extends 'core/base.html' %}
+{% load form_tags %}
+{% block title %}Event Detail{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>{{ event.title }}</h2>
+            <p class="text-muted">{{ event.category|title }} event requested by {{ event.coordinator }}</p>
+            <span class="badge {% if event.status == 'approved' %}bg-success{% elif event.status == 'pending' %}bg-warning text-dark{% elif event.status == 'rejected' %}bg-danger{% elif event.status == 'ongoing' %}bg-info text-dark{% else %}bg-secondary{% endif %}">{{ event.get_status_display }}</span>
+        </div>
+        <div>
+            <a href="{% url 'core:admin_events' %}" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+    <div class="row gy-4">
+        <div class="col-lg-8">
+            <div class="row gy-4 mb-4">
+                <div class="col-md-6">
+                    <div class="card shadow-sm p-4 mb-4">
+                        <h4>Event Description</h4>
+                        <p>{{ event.description }}</p>
+                        <h5>Details</h5>
+                        <ul class="list-unstyled">
+                            <li><strong>Venue:</strong> {{ event.venue }}</li>
+                            <li><strong>Date:</strong> {{ event.date }}</li>
+                            <li><strong>Time:</strong> {{ event.time }}</li>
+                            <li><strong>Deadline:</strong> {{ event.registration_deadline }}</li>
+                            <li><strong>Max participants:</strong> {{ event.max_participants }}</li>
+                            <li><strong>Participants:</strong> {{ event.participant_count }}</li>
+                            <li><strong>Event full:</strong> {{ event.is_full|yesno:'Yes,No' }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card shadow-sm p-4 mb-4">
+                        <h4>Financial summary</h4>
+                        <ul class="list-unstyled">
+                            <li><strong>Paid event:</strong> {{ event.is_paid_event|yesno:'Yes,No' }}</li>
+                            {% if event.is_paid_event %}
+                                <li><strong>Entry fee:</strong> {{ event.currency }} {{ event.entry_fee }}</li>
+                                <li><strong>Paid registrations:</strong> {{ event.paid_registration_count }}</li>
+                                <li><strong>Total revenue:</strong> {{ event.currency }} {{ event.total_revenue|floatformat:2 }}</li>
+                                <li><strong>Payment deadline:</strong> {{ event.payment_deadline|default:'N/A' }}</li>
+                            {% endif %}
+                            <li><strong>Coordinator:</strong> {{ event.coordinator }}</li>
+                            <li><strong>Approved by:</strong> {{ event.approved_by|default:'Pending' }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="card shadow-sm p-4">
+                <h5>Admin Actions</h5>
+                <form method="post" action="{% url 'core:approve_event' event.id %}">
+                    {% csrf_token %}
+                    {% for field in approval_form %}
+                        <div class="mb-3">
+                            <label class="form-label">{{ field.label }}</label>
+                            {{ field|add_class:'form-control' }}
+                            {% for error in field.errors %}<div class="text-danger small">{{ error }}</div>{% endfor %}
+                        </div>
+                    {% endfor %}
+                    <button class="btn btn-success">Approve Event</button>
+                </form>
+                <form method="post" action="{% url 'core:reject_event' event.id %}" class="mt-3">
+                    {% csrf_token %}
+                    <input type="hidden" name="status" value="rejected" />
+                    <div class="mb-3">
+                        <label class="form-label">Admin notes</label>
+                        {{ approval_form.approval_notes|add_class:'form-control' }}
+                    </div>
+                    <button class="btn btn-danger">Reject Event</button>
+                </form>
+            </div>
+            <div class="card shadow-sm p-4 mt-4">
+                <h5>QR Scan Attendance</h5>
+                {% if scan_feedback %}
+                    <div class="alert alert-{{ scan_feedback.0 }}">{{ scan_feedback.1 }}</div>
+                {% endif %}
+                <form method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="scan_qr" value="1" />
+                    <div class="mb-3">
+                        <label class="form-label">QR Token</label>
+                        <input type="text" name="scan_token" class="form-control" placeholder="Scan or paste a participant QR token" autofocus />
+                    </div>
+                    <button class="btn btn-primary">Verify Attendance</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="card shadow-sm p-4 mt-4">
+        <h4 class="mb-3">Event Participants</h4>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Registered At</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                        <th>Attendance</th>
+                        <th>QR Code</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for registration in participants %}
+                        <tr>
+                            <td>{{ registration.student.username }}</td>
+                            <td>{{ registration.registered_at|date:'M d, Y H:i' }}</td>
+                            <td>{{ registration.get_approval_status_display }}</td>
+                            <td>{{ registration.payment_status|capfirst }}</td>
+                            <td>{% if registration.attended %}Yes{% else %}No{% endif %}</td>
+                            <td>
+                                {% if registration.qr_code %}
+                                    <a href="{{ registration.qr_code.url }}" class="btn btn-sm btn-outline-secondary" download>Download</a>
+                                {% else %}
+                                    <span class="text-muted">Not generated</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr><td colspan="6" class="text-muted">No participant registrations yet.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

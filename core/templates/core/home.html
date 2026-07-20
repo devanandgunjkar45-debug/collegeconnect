@@ -1,0 +1,241 @@
+{% extends 'core/base.html' %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="container-fluid px-0">
+    <section class="hero-carousel position-relative overflow-hidden">
+        <div id="homeCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="5000" data-bs-pause="hover">
+            <div class="carousel-indicators">
+                {% if banners %}
+                    {% for banner in banners %}
+                        <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}" aria-current="{% if forloop.first %}true{% endif %}" aria-label="Slide {{ forloop.counter }}"></button>
+                    {% endfor %}
+                {% else %}
+                    <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#homeCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                {% endif %}
+            </div>
+            <div class="carousel-inner">
+                {% if banners %}
+                    {% for banner in banners %}
+                        <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                            <div class="carousel-slide" style="background-image: url('{{ banner.image.url }}');"></div>
+                            <div class="carousel-caption d-md-block text-start">
+                                {% if banner.title %}<h1 class="display-5 fw-bold">{{ banner.title }}</h1>{% endif %}
+                                {% if banner.subtitle %}<p class="lead">{{ banner.subtitle }}</p>{% endif %}
+                                {% if banner.button_text and banner.button_url %}
+                                    <a href="{{ banner.button_url }}" class="btn btn-primary btn-lg">{{ banner.button_text }}</a>
+                                {% else %}
+                                    <a href="{% url 'core:event_list' %}" class="btn btn-primary btn-lg">Explore Events</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="carousel-item active">
+                        <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1519389950473-47ba0277781c?auto=format&fit=crop&w=1600&q=80');"></div>
+                        <div class="carousel-caption d-md-block text-start">
+                            <h1 class="display-5 fw-bold">Join the best campus events</h1>
+                            <p class="lead">Browse workshops, festivals, competitions, and student clubs with one seamless platform.</p>
+                            <a href="{% url 'core:event_list' %}" class="btn btn-primary btn-lg">Explore Events</a>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1600&q=80');"></div>
+                        <div class="carousel-caption d-md-block text-start">
+                            <h1 class="display-5 fw-bold">Stay connected with announcements</h1>
+                            <p class="lead">Never miss campus news and event updates delivered directly to your dashboard.</p>
+                            <a href="{% url 'core:announcements' %}" class="btn btn-light btn-lg text-dark">View Announcements</a>
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="carousel-slide" style="background-image: url('https://images.unsplash.com/photo-1527689368864-3a821dbccc34?auto=format&fit=crop&w=1600&q=80');"></div>
+                        <div class="carousel-caption d-md-block text-start">
+                            <h1 class="display-5 fw-bold">Register, participate, and succeed</h1>
+                            <p class="lead">Manage your registrations, track attendance, and earn certificates from one place.</p>
+                            <a href="{% url 'core:dashboard' %}" class="btn btn-primary btn-lg">Open Dashboard</a>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#homeCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#homeCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Next</span>
+            </button>
+        </div>
+    </section>
+</div>
+<div class="container">
+    <section class="py-5">
+        <div class="row g-4 text-center">
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                    <div class="fs-1 text-primary mb-3">&#9733;</div>
+                    <h5>Discover events</h5>
+                    <p class="text-muted">Find the best activities, workshops, and competitions happening on campus.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                    <div class="fs-1 text-success mb-3">&#128101;</div>
+                    <h5>Register quickly</h5>
+                    <p class="text-muted">Register for events in a few clicks and track participation inside your profile.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm border-0 rounded-4 p-4 h-100">
+                    <div class="fs-1 text-warning mb-3">&#128240;</div>
+                    <h5>Stay updated</h5>
+                    <p class="text-muted">Receive announcements, reminders, and event confirmations directly in your dashboard.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% if user.is_authenticated and user.is_student %}
+    <section class="py-5">
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <div class="card shadow-sm rounded-4 border-0 p-4 h-100">
+                    <h5 class="mb-2">Your registered events</h5>
+                    <p class="display-6 fw-bold mb-0">{{ student_registrations }}</p>
+                    <p class="text-muted mb-0">Events you have joined so far.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm rounded-4 border-0 p-4 h-100 bg-primary text-white">
+                    <h5 class="mb-2">Upcoming approvals</h5>
+                    <p class="mb-0">See the latest event opportunities and register before deadlines.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card shadow-sm rounded-4 border-0 p-4 h-100">
+                    <h5 class="mb-2">Quick access</h5>
+                    <a href="{% url 'core:my_events' %}" class="btn btn-sm btn-outline-primary">My registrations</a>
+                    <a href="{% url 'core:notifications' %}" class="btn btn-sm btn-outline-secondary ms-2">Notifications</a>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h2 class="h4">Your next campus events</h2>
+                <p class="text-muted mb-0">Register for events and stay connected with student announcements.</p>
+            </div>
+            <a href="{% url 'core:event_list' %}" class="btn btn-sm btn-outline-primary">Browse all events</a>
+        </div>
+        <div class="row g-4">
+            {% for event in featured_events %}
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm overflow-hidden border-0 rounded-4">
+                        {% if event.banner %}
+                            <img src="{{ event.banner.url }}" class="card-img-top" alt="{{ event.title }}" />
+                        {% endif %}
+                        <div class="card-body d-flex flex-column">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="card-title">{{ event.title }}</h5>
+                                    <p class="small text-muted mb-0">{{ event.category|title }} • {{ event.date }}</p>
+                                </div>
+                                <span class="badge {% if event.is_registration_open %}bg-success{% else %}bg-secondary{% endif %}">{{ event.get_status_display }}</span>
+                            </div>
+                            <p class="card-text text-truncate mb-4">{{ event.description }}</p>
+                            <div class="mt-auto">
+                                <a class="btn btn-outline-primary btn-sm" href="{% url 'core:event_detail' event.id %}">Details</a>
+                                {% if event.is_registration_open %}
+                                    <a class="btn btn-primary btn-sm ms-2" href="{% url 'core:event_detail' event.id %}">Join</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12"><p class="text-muted">No upcoming events are available.</p></div>
+            {% endfor %}
+        </div>
+    </section>
+    <section class="py-5">
+        <div class="row align-items-center mb-4">
+            <div class="col-md-8">
+                <h2 class="h4">Latest announcements</h2>
+                <p class="text-muted mb-0">Stay up to date with the latest campus updates and notices.</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <a href="#" class="btn btn-sm btn-outline-secondary">View all announcements</a>
+            </div>
+        </div>
+        <div class="row g-4">
+            {% for announcement in announcements %}
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm rounded-4 border-0">
+                        <div class="card-body">
+                            <p class="text-muted small mb-2">{{ announcement.publish_date }}</p>
+                            <h5 class="card-title">{{ announcement.title }}</h5>
+                            <p class="card-text">{{ announcement.message|truncatewords:20 }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% empty %}
+                <div class="col-12"><p class="text-muted">No announcements yet. Check back soon.</p></div>
+            {% endfor %}
+        </div>
+    </section>
+    {% else %}
+    <section class="py-5">
+        <div class="row align-items-center gx-5">
+            <div class="col-lg-7">
+                <h2 class="h4">Welcome back, {{ user.first_name|default:user.username }}!</h2>
+                <p class="text-secondary">CampusConnect helps all campus roles stay organized. Explore the dashboard to manage your profile and review your tasks.</p>
+                <div class="d-flex flex-wrap gap-3 mt-4">
+                    <a href="{% url 'core:dashboard' %}" class="btn btn-primary btn-lg">Go to Dashboard</a>
+                    <a href="{% url 'core:notifications' %}" class="btn btn-outline-primary btn-lg">View Notifications</a>
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="card border-0 shadow-sm p-4 bg-white rounded-4">
+                    <h5 class="mb-3">CampusConnect overview</h5>
+                    <p class="mb-2"><strong>{{ total_events }}</strong> approved events</p>
+                    <p class="mb-2"><strong>{{ upcoming_count }}</strong> events starting soon</p>
+                    <p class="mb-0">Your role determines what you see next: students get events, coordinators get approvals, and admins manage the campus network.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+    <section class="py-5 bg-light rounded-4">
+        <div class="row gy-4">
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm p-4 h-100 text-center">
+                    <h4 class="fw-bold">{{ total_events }}</h4>
+                    <p class="text-secondary">Approved events available for students</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm p-4 h-100 text-center">
+                    <h4 class="fw-bold">{{ upcoming_count }}</h4>
+                    <p class="text-secondary">Upcoming events starting soon</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm p-4 h-100 text-center">
+                    <h4 class="fw-bold">Instant updates</h4>
+                    <p class="text-secondary">Announcements, reminders, and student notifications in one place.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    <section class="py-5 bg-white rounded-4 shadow-sm">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <h2>Plan better, attend more</h2>
+                <p class="text-secondary">CampusConnect helps students discover events, track participation, and connect with organizers through a smarter campus dashboard.</p>
+            </div>
+            <div class="col-lg-5 text-center">
+                <img src="https://images.unsplash.com/photo-1543872084-c7bd3822856f?auto=format&fit=crop&w=900&q=80" class="img-fluid rounded-4 shadow" alt="Campus planning" />
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'core/base.html' %}
+{% block title %}Manage Gallery{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Gallery</h2>
+            <p class="text-muted">Upload and manage images shown in the event gallery.</p>
+        </div>
+        <a href="{% url 'core:admin_gallery_create' %}" class="btn btn-primary">Add Gallery Image</a>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Preview</th>
+                    <th>Title</th>
+                    <th>Uploaded</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in gallery_items %}
+                    <tr>
+                        <td><img src="{{ item.image.url }}" alt="{{ item.title }}" style="max-height: 80px; max-width: 120px; object-fit: cover;" class="rounded" /></td>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.created_at|date:'M d, Y H:i' }}</td>
+                        <td>
+                            <a href="{% url 'core:admin_gallery_edit' item.id %}" class="btn btn-sm btn-outline-secondary me-2">Edit</a>
+                            <a href="{% url 'core:admin_gallery_delete' item.id %}" class="btn btn-sm btn-outline-danger">Delete</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="4" class="text-muted">No gallery images have been uploaded yet.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

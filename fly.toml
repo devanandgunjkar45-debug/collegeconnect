@@ -1,0 +1,30 @@
+app = "campusconnect"
+primary_region = "iad"
+
+[env]
+  DJANGO_DEBUG = "False"
+  DJANGO_ALLOWED_HOSTS = "0.0.0.0"
+  DJANGO_USE_WHITENOISE = "True"
+  DB_ENGINE = "sqlite3"
+
+[[services]]
+  internal_port = 8000
+  protocol = "tcp"
+
+  [services.concurrency]
+    soft_limit = 25
+    hard_limit = 50
+
+  [[services.ports]]
+    handlers = ["http"]
+    port = 80
+
+  [[services.ports]]
+    handlers = ["tls"]
+    port = 443
+
+  [services.tcp_checks]
+    grace_period = "30s"
+    interval = 15000
+    timeout = 2000
+    restart_limit = 0

@@ -1,0 +1,10 @@
+Hello Admin,
+
+A new event has been submitted on CampusConnect and is pending approval.
+
+Event: {{ event.title }}
+Coordinator: {{ coordinator.username }}
+Date: {{ event.date }}
+Venue: {{ event.venue }}
+
+Visit the admin panel to review and approve this event.

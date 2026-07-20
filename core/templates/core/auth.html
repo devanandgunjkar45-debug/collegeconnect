@@ -1,0 +1,171 @@
+{% extends 'core/base.html' %}
+{% load form_tags %}
+{% block title %}CampusConnect Login / Register{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+<style>
+    .auth-tabs {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+    .auth-tab-button {
+        flex: 1;
+        border-radius: 0.75rem;
+        border: 1px solid #dee2e6;
+        padding: 0.9rem 1rem;
+        background: #fff;
+        color: #495057;
+        cursor: pointer;
+        transition: background 0.2s ease;
+    }
+    .auth-tab-button.active {
+        background: #2c6bed;
+        color: #fff;
+        border-color: #2c6bed;
+    }
+    .auth-form-panel {
+        display: none;
+    }
+    .auth-form-panel.active {
+        display: block;
+    }
+</style>
+{% endblock %}
+{% block content %}
+<div class="auth-screen d-flex align-items-center justify-content-center min-vh-100">
+    <div class="card auth-card shadow-lg rounded-4 overflow-hidden">
+        <div class="row g-0">
+            <div class="col-md-6 auth-card-image d-none d-md-block"></div>
+            <div class="col-md-6 p-4">
+                <div class="mb-4 text-center">
+                    <h3 class="fw-bold">CampusConnect</h3>
+                    <p class="text-muted mb-0">Access campus events, announcements, and registrations from one portal.</p>
+                </div>
+                <div class="auth-tabs">
+                    <button type="button" class="auth-tab-button{% if active_tab == 'login' %} active{% endif %}" data-tab="login">Login</button>
+                    <button type="button" class="auth-tab-button{% if active_tab == 'register' %} active{% endif %}" data-tab="register">Register</button>
+                </div>
+                <div class="auth-form-panel{% if active_tab == 'login' %} active{% endif %}" id="login-panel">
+                    <form method="post" action="{% url 'core:login' %}" novalidate>
+                        {% csrf_token %}
+                        {% if login_form.non_field_errors %}
+                            <div class="alert alert-danger">{{ login_form.non_field_errors }}</div>
+                        {% endif %}
+                        <div class="mb-3">
+                            {{ login_form.username.label_tag }}
+                            {{ login_form.username|add_class:'form-control form-control-lg' }}
+                            {% for error in login_form.username.errors %}
+                                <div class="form-text text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="mb-3 position-relative">
+                            {{ login_form.password.label_tag }}
+                            {{ login_form.password|add_class:'form-control form-control-lg password-input' }}
+                            <button type="button" class="btn btn-sm btn-outline-secondary password-toggle" tabindex="-1">
+                                <i class="fa fa-eye"></i>
+                            </button>
+                            {% for error in login_form.password.errors %}
+                                <div class="form-text text-danger">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                        <div class="form-check mb-3">
+                            {{ login_form.remember_me|add_class:'form-check-input' }}
+                            {{ login_form.remember_me.label_tag }}
+                        </div>
+                        <input type="hidden" name="next" value="{{ next }}" />
+                        <button type="submit" class="btn btn-primary btn-lg w-100">Login</button>
+                        <div class="mt-3 text-end">
+                            <a href="{% url 'core:password_reset' %}" class="small">Forgot password?</a>
+                        </div>
+                    </form>
+                    <p class="text-center text-muted mt-4 mb-0">Don't have an account? <button type="button" class="btn btn-link p-0" id="switch-to-register">Register here</button></p>
+                </div>
+                <div class="auth-form-panel{% if active_tab == 'register' %} active{% endif %}" id="register-panel">
+                    <form method="post" action="{% url 'core:register' %}" novalidate>
+                        {% csrf_token %}
+                        {% if register_form.non_field_errors %}
+                            <div class="alert alert-danger">{{ register_form.non_field_errors }}</div>
+                        {% endif %}
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                {{ register_form.username.label_tag }}
+                                {{ register_form.username|add_class:'form-control form-control-lg' }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ register_form.email.label_tag }}
+                                {{ register_form.email|add_class:'form-control form-control-lg' }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ register_form.phone.label_tag }}
+                                {{ register_form.phone|add_class:'form-control form-control-lg' }}
+                            </div>
+                            <div class="col-md-6">
+                                {{ register_form.role.label_tag }}
+                                {{ register_form.role|add_class:'form-select form-select-lg' }}
+                            </div>
+                            <div class="col-md-6 position-relative">
+                                {{ register_form.password1.label_tag }}
+                                {{ register_form.password1|add_class:'form-control form-control-lg password-input' }}
+                                <button type="button" class="btn btn-sm btn-outline-secondary password-toggle" tabindex="-1">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="col-md-6 position-relative">
+                                {{ register_form.password2.label_tag }}
+                                {{ register_form.password2|add_class:'form-control form-control-lg password-input' }}
+                                <button type="button" class="btn btn-sm btn-outline-secondary password-toggle" tabindex="-1">
+                                    <i class="fa fa-eye"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <input type="hidden" name="next" value="{{ next }}" />
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mt-4">Register</button>
+                    </form>
+                    <p class="text-center text-muted mt-4 mb-0">Already have an account? <button type="button" class="btn btn-link p-0" id="switch-to-login">Login here</button></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const loginPanel = document.getElementById('login-panel');
+        const registerPanel = document.getElementById('register-panel');
+        const loginTab = document.querySelector('[data-tab="login"]');
+        const registerTab = document.querySelector('[data-tab="register"]');
+        const switchToRegister = document.getElementById('switch-to-register');
+        const switchToLogin = document.getElementById('switch-to-login');
+
+        const activateTab = (tab) => {
+            if (tab === 'login') {
+                loginPanel.classList.add('active');
+                registerPanel.classList.remove('active');
+                loginTab.classList.add('active');
+                registerTab.classList.remove('active');
+            } else {
+                loginPanel.classList.remove('active');
+                registerPanel.classList.add('active');
+                loginTab.classList.remove('active');
+                registerTab.classList.add('active');
+            }
+        };
+
+        loginTab?.addEventListener('click', () => activateTab('login'));
+        registerTab?.addEventListener('click', () => activateTab('register'));
+        switchToRegister?.addEventListener('click', () => activateTab('register'));
+        switchToLogin?.addEventListener('click', () => activateTab('login'));
+
+        document.querySelectorAll('.password-toggle').forEach(toggle => {
+            const passwordInput = toggle.closest('.position-relative').querySelector('.password-input');
+            toggle.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                toggle.querySelector('i').classList.toggle('fa-eye-slash');
+            });
+        });
+    });
+</script>
+{% endblock %}

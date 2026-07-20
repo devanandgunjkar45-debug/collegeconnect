@@ -1,0 +1,12 @@
+Hello {{ event.coordinator.username }},
+
+Unfortunately, your event submission was rejected on CampusConnect.
+
+Event: {{ event.title }}
+Date: {{ event.date }}
+Venue: {{ event.venue }}
+
+Admin notes:
+{{ event.approval_notes|default:'No additional notes provided.' }}
+
+Please update your event details and submit again if needed.

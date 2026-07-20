@@ -1,0 +1,41 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: campusconnect_db
+      MYSQL_USER: campusconnect_user
+      MYSQL_PASSWORD: campusconnect_pass
+    volumes:
+      - db_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  web:
+    build: .
+    command: gunicorn campusconnect.wsgi:application --bind 0.0.0.0:8000 --workers 3
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    environment:
+      DJANGO_DEBUG: 'False'
+      DJANGO_ALLOWED_HOSTS: 'localhost 127.0.0.1'
+      DB_ENGINE: mysql
+      MYSQL_DATABASE: campusconnect_db
+      MYSQL_USER: campusconnect_user
+      MYSQL_PASSWORD: campusconnect_pass
+      MYSQL_HOST: db
+      MYSQL_PORT: '3306'
+      EMAIL_HOST: smtp.gmail.com
+      EMAIL_PORT: '587'
+      EMAIL_USE_TLS: 'True'
+      DEFAULT_FROM_EMAIL: 'noreply@campusconnect.com'
+    depends_on:
+      - db
+
+volumes:
+  db_data:

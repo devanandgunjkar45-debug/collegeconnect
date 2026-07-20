@@ -1,0 +1,58 @@
+{% extends 'core/base.html' %}
+{% block title %}Admin Event Management{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Event Management</h2>
+            <p class="text-muted">Review, approve, and manage event lifecycle states.</p>
+        </div>
+        <div>
+            <a href="{% url 'core:admin_event_create' %}" class="btn btn-primary me-2">Add New Event</a>
+            <a href="{% url 'core:admin_announcements' %}" class="btn btn-outline-info me-2">Announcements</a>
+            <a href="{% url 'core:admin_participants' %}" class="btn btn-outline-success me-2">Participants</a>
+            <a href="?status=pending" class="btn btn-outline-primary">Pending</a>
+            <a href="?status=approved" class="btn btn-outline-success">Approved</a>
+            <a href="?status=ongoing" class="btn btn-outline-warning">Ongoing</a>
+            <a href="?status=completed" class="btn btn-outline-secondary">Completed</a>
+            <a href="?status=rejected" class="btn btn-outline-danger">Rejected</a>
+        </div>
+    </div>
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead>
+                <tr>
+                    <th>Title</th>
+                    <th>Category</th>
+                    <th>Date</th>
+                    <th>Venue</th>
+                    <th>Status</th>
+                    <th>Participants</th>
+                    <th>Paid</th>
+                    <th>Revenue</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in events %}
+                    <tr>
+                        <td><a href="{% url 'core:admin_event_detail' event.id %}">{{ event.title }}</a></td>
+                        <td>{{ event.get_category_display }}</td>
+                        <td>{{ event.date }}</td>
+                        <td>{{ event.venue }}</td>
+                        <td>{{ event.get_status_display }}</td>
+                        <td>{{ event.participant_count }}</td>
+                        <td>{{ event.paid_registration_count }}</td>
+                        <td>{{ event.currency }} {{ event.total_revenue|floatformat:2 }}</td>
+                        <td>
+                            <a href="{% url 'core:admin_event_detail' event.id %}" class="btn btn-sm btn-outline-secondary">Details</a>
+                        </td>
+                    </tr>
+                {% empty %}
+                    <tr><td colspan="7" class="text-muted">No events found for this status.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

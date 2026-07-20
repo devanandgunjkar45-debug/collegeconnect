@@ -1,0 +1,27 @@
+{% extends 'core/base.html' %}
+{% load form_tags %}
+{% block title %}Profile{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center mt-5">
+        <div class="col-lg-8">
+            <div class="card shadow-sm">
+                <div class="card-body">
+                    <h3 class="mb-4">Profile</h3>
+                    <form method="post" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row gy-3">
+                            <div class="col-md-6">{{ form.first_name.label_tag }}{{ form.first_name|add_class:'form-control' }}</div>
+                            <div class="col-md-6">{{ form.last_name.label_tag }}{{ form.last_name|add_class:'form-control' }}</div>
+                            <div class="col-md-6">{{ form.email.label_tag }}{{ form.email|add_class:'form-control' }}</div>
+                            <div class="col-md-6">{{ form.phone.label_tag }}{{ form.phone|add_class:'form-control' }}</div>
+                            <div class="col-12">{{ form.profile_image.label_tag }}{{ form.profile_image|add_class:'form-control' }}</div>
+                        </div>
+                        <button class="btn btn-primary mt-4">Save changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

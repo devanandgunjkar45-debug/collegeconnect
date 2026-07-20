@@ -1,0 +1,132 @@
+body {
+    font-family: 'Inter', sans-serif;
+    background: #f8f9ff;
+    color: #212529;
+}
+
+.light-mode {
+    background: #f8f9ff;
+    color: #212529;
+}
+
+.dark-mode {
+    background: #111827;
+    color: #f7f7fb;
+}
+
+.navbar-brand {
+    letter-spacing: 0.03em;
+}
+
+.card {
+    border: none;
+}
+
+.hero {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+}
+
+.hero-carousel {
+    position: relative;
+    min-height: 70vh;
+    overflow: hidden;
+}
+
+.hero-carousel .carousel-item {
+    position: relative;
+    display: block;
+    min-height: 70vh;
+}
+
+.carousel-slide {
+    position: absolute;
+    inset: 0;
+    background-size: cover;
+    background-position: center;
+    transition: opacity 0.8s ease;
+    opacity: 0.92;
+}
+
+.carousel-item::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.35);
+}
+
+.carousel-caption {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    transform: translateY(-50%);
+    text-align: left;
+    max-width: 720px;
+    z-index: 2;
+}
+
+.carousel-caption h1,
+.carousel-caption p {
+    text-shadow: 0 15px 30px rgba(10, 25, 55, 0.6);
+}
+
+.carousel-caption h1,
+.carousel-caption p {
+    text-shadow: 0 15px 30px rgba(10, 25, 55, 0.6);
+}
+
+.carousel-caption h1,
+.carousel-caption p {
+    text-shadow: 0 15px 30px rgba(10, 25, 55, 0.6);
+}
+
+.auth-screen {
+    min-height: calc(100vh - 88px);
+    background: linear-gradient(180deg, rgba(12, 18, 63, 0.04), rgba(246, 248, 253, 0.96));
+}
+
+.auth-card {
+    max-width: 900px;
+}
+
+.auth-card-image {
+    min-height: 400px;
+    background-size: cover;
+    background-position: center;
+}
+
+.auth-card-register {
+    background-image: url('https://images.unsplash.com/photo-1511871893249-0a55f7d7c0c3?auto=format&fit=crop&w=900&q=80');
+}
+
+.auth-card-image {
+    background-image: url('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?auto=format&fit=crop&w=900&q=80');
+}
+
+.password-toggle {
+    position: absolute;
+    top: 50%;
+    right: 0.75rem;
+    transform: translateY(-50%);
+}
+
+.btn-primary {
+    background-color: #2c6bed;
+    border-color: #2c6bed;
+}
+
+.btn-primary:hover {
+    background-color: #1f55c3;
+    border-color: #1f55c3;
+}
+
+footer {
+    border-top: 1px solid rgba(255,255,255,0.08);
+}
+
+@media (prefers-color-scheme: dark) {
+    body {
+        background: #080a12;
+        color: #e2e8f0;
+    }
+}

@@ -1,0 +1,11 @@
+Django>=4.2
+mysqlclient>=2.1
+python-dotenv>=1.2
+django-crispy-forms>=2.0
+crispy-bootstrap5>=0.7
+django-filter>=23.2
+qrcode>=7.3
+Pillow>=10.0
+reportlab>=4.1
+gunicorn>=21.0
+whitenoise>=6.0

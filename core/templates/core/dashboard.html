@@ -1,0 +1,51 @@
+{% extends 'core/base.html' %}
+{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Welcome back, {{ user.first_name|default:user.username }}</h2>
+            <p class="text-muted">Your personalized CampusConnect dashboard.</p>
+        </div>
+        <a class="btn btn-outline-secondary" href="{% url 'core:profile' %}">Edit Profile</a>
+    </div>
+    {% if user.is_admin %}
+        <div class="row g-4">
+            <div class="col-md-3"><div class="card shadow-sm p-3"><h6>Students</h6><p class="display-6 mb-0">{{ total_students }}</p></div></div>
+            <div class="col-md-3"><div class="card shadow-sm p-3"><h6>Coordinators</h6><p class="display-6 mb-0">{{ total_coordinators }}</p></div></div>
+            <div class="col-md-3"><div class="card shadow-sm p-3"><h6>Organizers</h6><p class="display-6 mb-0">{{ total_organizers }}</p></div></div>
+            <div class="col-md-3"><div class="card shadow-sm p-3"><h6>Managed Users</h6><p class="display-6 mb-0">{{ total_users }}</p></div></div>
+            <div class="col-md-3"><div class="card shadow-sm p-3"><h6>Pending Events</h6><p class="display-6 mb-0">{{ pending_events }}</p></div></div>
+            <div class="col-md-3"><div class="card shadow-sm p-3"><h6>Total Registrations</h6><p class="display-6 mb-0">{{ total_registrations }}</p></div></div>
+            <div class="col-md-3"><div class="card shadow-sm p-3"><h6>Pending Registrations</h6><p class="display-6 mb-0">{{ pending_registrations }}</p></div></div>
+            <div class="col-md-3"><div class="card shadow-sm p-3"><h6>Paid Registrations</h6><p class="display-6 mb-0">{{ total_paid_registrations }}</p></div></div>
+        </div>
+        <section class="mt-5">
+            <h4>Pending Approval Actions</h4>
+            <div class="alert alert-info">Use the admin panel to approve or reject new student accounts and review pending events.</div>
+        </section>
+    {% else %}
+        <div class="row g-4">
+            <div class="col-md-4"><div class="card shadow-sm p-3"><h6>Registered Events</h6><p class="display-6 mb-0">{{ registered_events }}</p></div></div>
+            <div class="col-md-4"><div class="card shadow-sm p-3"><h6>Upcoming Events</h6><p class="display-6 mb-0">{{ upcoming_events }}</p></div></div>
+            <div class="col-md-4"><div class="card shadow-sm p-3"><h6>Unread Notifications</h6><p class="display-6 mb-0">{{ notifications.count }}</p></div></div>
+        </div>
+        <section class="mt-5">
+            <h4>Recent Events</h4>
+            <div class="row g-4 mt-3">
+                {% for event in recent_events %}
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <h5>{{ event.title }}</h5>
+                                <p class="small text-muted">{{ event.date }} • {{ event.venue }}</p>
+                                <a href="{% url 'core:event_detail' event.id %}" class="btn btn-outline-primary btn-sm">View Event</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        </section>
+    {% endif %}
+</div>
+{% endblock %}

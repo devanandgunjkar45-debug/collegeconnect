@@ -1,0 +1,62 @@
+{% extends 'core/base.html' %}
+{% load form_tags %}
+{% block title %}Login{% endblock %}
+{% block styles %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+{% block content %}
+<div class="auth-screen d-flex align-items-center justify-content-center min-vh-100">
+    <div class="card auth-card shadow-lg rounded-4 overflow-hidden">
+        <div class="row g-0">
+            <div class="col-md-6 auth-card-image d-none d-md-block"></div>
+            <div class="col-md-6 p-4">
+                <div class="mb-4 text-center">
+                    <h3 class="fw-bold">Welcome back</h3>
+                    <p class="text-muted mb-0">Log in to access your CampusConnect dashboard.</p>
+                </div>
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    {% if form.non_field_errors %}
+                        <div class="alert alert-danger">{{ form.non_field_errors }}</div>
+                    {% endif %}
+                    <div class="mb-3">
+                        {{ form.username.label_tag }}
+                        {{ form.username|add_class:'form-control form-control-lg' }}
+                        {% for error in form.username.errors %}
+                            <div class="form-text text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <div class="mb-3 position-relative">
+                        {{ form.password.label_tag }}
+                        {{ form.password|add_class:'form-control form-control-lg password-input' }}
+                        <button type="button" class="btn btn-sm btn-outline-secondary password-toggle" tabindex="-1">
+                            <i class="fa fa-eye"></i>
+                        </button>
+                        {% for error in form.password.errors %}
+                            <div class="form-text text-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                    <input type="hidden" name="next" value="{{ next }}" />
+                    <button type="submit" class="btn btn-primary btn-lg w-100">Login</button>
+                </form>
+                <p class="text-center text-muted mt-4 mb-0">Don't have an account? <a href="{% url 'core:register' %}">Create one</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const toggle = document.querySelector('.password-toggle');
+        const passwordInput = document.querySelector('.password-input');
+        if (toggle && passwordInput) {
+            toggle.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                toggle.querySelector('i').classList.toggle('fa-eye-slash');
+            });
+        }
+    });
+</script>
+{% endblock %}

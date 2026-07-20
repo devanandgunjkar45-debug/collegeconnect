@@ -1,0 +1,9 @@
+Hello {{ event.coordinator.username }},
+
+Good news! Your event has been approved on CampusConnect.
+
+Event: {{ event.title }}
+Date: {{ event.date }}
+Venue: {{ event.venue }}
+
+If you have any questions, contact {{ admin.username }} or the support team.

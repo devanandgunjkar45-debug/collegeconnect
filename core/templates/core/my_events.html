@@ -1,0 +1,28 @@
+{% extends 'core/base.html' %}
+{% block title %}My Events{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>My Registered Events</h2>
+    <div class="row g-4 mt-3">
+        {% for registration in registrations %}
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5>{{ registration.event.title }}</h5>
+                        <p class="small text-muted">{{ registration.event.date }} • {{ registration.event.venue }}</p>
+                        <p><strong>Attendance:</strong> {{ registration.attended|yesno:"Present,Absent" }}</p>
+                        <p><strong>Payment:</strong> {{ registration.payment_status|capfirst }}</p>
+                        <p><strong>Status:</strong> <span class="badge {% if registration.event.status == 'approved' %}bg-success{% elif registration.event.status == 'pending' %}bg-warning text-dark{% elif registration.event.status == 'rejected' %}bg-danger{% elif registration.event.status == 'ongoing' %}bg-info text-dark{% else %}bg-secondary{% endif %}">{{ registration.event.get_status_display }}</span></p>
+                        <a href="{% url 'core:event_detail' registration.event.id %}" class="btn btn-outline-primary btn-sm">View Event</a>
+                        {% if registration.qr_code %}
+                            <a href="{{ registration.qr_code.url }}" class="btn btn-secondary btn-sm ms-2" download>Download QR Pass</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12"><p class="text-muted">You have no event registrations yet.</p></div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

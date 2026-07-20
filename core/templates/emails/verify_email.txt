@@ -1,0 +1,11 @@
+Hello {{ user.username }},
+
+Thank you for registering with CampusConnect.
+
+Please verify your email by clicking the link below:
+
+{{ verification_link }}
+
+Once verified, an administrator will review your account and approve it.
+
+If you did not request this email, please ignore it.

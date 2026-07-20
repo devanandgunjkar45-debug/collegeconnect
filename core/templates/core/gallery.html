@@ -1,0 +1,30 @@
+{% extends 'core/base.html' %}
+{% block title %}Gallery{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2>Event Gallery</h2>
+            <p class="text-muted">Explore student highlights from campus events and celebrations.</p>
+        </div>
+        <a href="{% url 'core:home' %}" class="btn btn-outline-primary">Back to Home</a>
+    </div>
+    <div class="row g-4">
+        {% for item in gallery_items %}
+            <div class="col-md-4">
+                <div class="card shadow-sm overflow-hidden rounded-4 border-0">
+                    <img src="{{ item.image.url }}" class="card-img-top" alt="{{ item.title }}" />
+                    <div class="card-body">
+                        <h5>{{ item.title }}</h5>
+                        <p class="text-muted small mb-0">{{ item.created_at|date:'M d, Y' }}</p>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">No gallery items are available yet.</div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

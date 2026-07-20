@@ -1,0 +1,8 @@
+New contact request from CampusConnect website:
+
+Name: {{ name }}
+Email: {{ email }}
+Subject: {{ subject }}
+
+Message:
+{{ message }}

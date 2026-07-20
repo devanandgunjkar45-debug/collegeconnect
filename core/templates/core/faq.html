@@ -1,0 +1,25 @@
+{% extends 'core/base.html' %}
+{% block title %}FAQ{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <h2>Frequently Asked Questions</h2>
+    <div class="accordion mt-4" id="faqAccordion">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne">How do I register for events?</button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">Create an account as a student, browse events, and click register on the event page.</div>
+            </div>
+        </div>
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingTwo">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseTwo">Can I manage a club?</button>
+            </h2>
+            <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                <div class="accordion-body">Yes, club organizers can create club pages, invite members, and manage club events.</div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'core/base.html' %}
+{% block title %}Notifications{% endblock %}
+{% block content %}
+<div class="container">
+    <h2>Notifications</h2>
+    <div class="list-group mt-3">
+        {% for note in notifications %}
+            <div class="list-group-item list-group-item-action">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">{{ note.title }}</h5>
+                    <small>{{ note.created_at|date:'M d, Y H:i' }}</small>
+                </div>
+                <p class="mb-1">{{ note.message }}</p>
+                <small class="text-muted">{% if note.is_read %}Read{% else %}Unread{% endif %}</small>
+            </div>
+        {% empty %}
+            <div class="alert alert-info">No notifications yet.</div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

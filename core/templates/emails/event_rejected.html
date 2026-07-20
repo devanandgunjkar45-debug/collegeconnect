@@ -1,0 +1,11 @@
+<html>
+<body>
+    <p>Hello {{ event.coordinator.username }},</p>
+    <p>Unfortunately, your event submission was rejected on CampusConnect.</p>
+    <p><strong>Event:</strong> {{ event.title }}<br />
+    <strong>Date:</strong> {{ event.date }}<br />
+    <strong>Venue:</strong> {{ event.venue }}</p>
+    <p><strong>Admin notes:</strong><br />{{ event.approval_notes|default:'No additional notes provided.' }}</p>
+    <p>Please update your event details and submit again if needed.</p>
+</body>
+</html>
