@@ -7,6 +7,7 @@ services:
     branch: main
     dockerfilePath: Dockerfile
     autoDeploy: true
+    postDeploy: ./build.sh
     envVars:
       - key: DJANGO_DEBUG
         value: "False"
@@ -25,4 +26,3 @@ services:
     name: campusconnect_db
     plan: free
     ipAllowList: []
-    postgresVersion: 15
