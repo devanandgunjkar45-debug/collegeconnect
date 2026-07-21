@@ -36,9 +36,27 @@ git push origin main
 ### Step 4: Get Your Service URL
 - After deployment, go to your web service dashboard
 - Copy your service URL (looks like: `yourapp.onrender.com`)
-- The migrations will run automatically on first deployment via `start.sh`
 
-### Step 5: Update Environment Variables
+### Step 4.5: Create PostgreSQL Database (Manual Step)
+1. In Render dashboard, click **"New +"** → **"PostgreSQL"**
+2. Fill in:
+   - **Name**: `campusconnect_db`
+   - **Database**: `campusconnect`
+   - **User**: `campusconnect_user`
+   - **Region**: Same as your web service (Oregon)
+   - **Plan**: Free tier
+3. Click **"Create Database"**
+4. Wait 2-3 minutes for database to be created
+5. Once created, copy the **Internal Database URL** (starts with `postgresql://`)
+
+### Step 5: Add Database URL to Web Service
+1. Go to your web service → **"Environment"**
+2. Add environment variable:
+   - **Key**: `DATABASE_URL`
+   - **Value**: Paste the PostgreSQL connection string from the database you created
+3. Click **"Save"** - service will redeploy
+
+### Step 6: Update Additional Environment Variables
 1. In Render dashboard → Web Service → **"Environment"**
 2. Add/Update these environment variables:
 
@@ -54,13 +72,13 @@ git push origin main
 
 3. Click **"Save"** - service will redeploy automatically
 
-### Step 6: Verify Deployment
+### Step 7: Verify Deployment
 1. Visit `https://yourdomain.onrender.com`
 2. Test login at `/admin`
 3. Check that database is working
 4. Monitor logs for any errors
 
-### Step 7: (Optional) Create Superuser Manually
+### Step 8: (Optional) Create Superuser Manually
 If migrations ran but you need to create a superuser:
 
 1. In Render dashboard → Web Service → **"Shell"**
@@ -85,8 +103,9 @@ When the app starts on Render:
 - Verify `start.sh` has correct permissions
 
 ### Database migration errors
-- Check PostgreSQL service is created in render.yaml
-- Verify `DATABASE_URL` environment variable is set
+- Verify PostgreSQL database is created manually in Render
+- Check `DATABASE_URL` environment variable is set and correct
+- Ensure it uses the **Internal Database URL** (for Render-to-Render communication)
 - View logs to see specific error messages
 - Manual migration: Go to Shell and run `python manage.py migrate`
 
