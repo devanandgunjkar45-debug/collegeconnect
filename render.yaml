@@ -7,7 +7,6 @@ services:
     branch: main
     dockerfilePath: Dockerfile
     autoDeploy: true
-    postDeploy: ./build.sh
     envVars:
       - key: DJANGO_DEBUG
         value: "False"

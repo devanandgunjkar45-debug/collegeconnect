@@ -10,15 +10,15 @@
 ### Step 1: Verify Configuration Files
 All files have been updated:
 - ✅ `render.yaml` - Updated with PostgreSQL and proper configuration
-- ✅ `Dockerfile` - Updated with PostgreSQL dependencies
+- ✅ `Dockerfile` - Updated with PostgreSQL dependencies and startup script
+- ✅ `start.sh` - Created for running migrations and starting app
 - ✅ `requirements.txt` - Added `dj-database-url` and `psycopg2-binary`
-- ✅ `build.sh` - Created for migrations
 - ✅ `campusconnect/settings.py` - Updated to use PostgreSQL
 
 ### Step 2: Push Changes to GitHub
 ```bash
 git add .
-git commit -m "Configure deployment for Render with PostgreSQL"
+git commit -m "Configure deployment for Render with PostgreSQL and startup script"
 git push origin main
 ```
 
@@ -36,10 +36,11 @@ git push origin main
 ### Step 4: Get Your Service URL
 - After deployment, go to your web service dashboard
 - Copy your service URL (looks like: `yourapp.onrender.com`)
+- The migrations will run automatically on first deployment via `start.sh`
 
 ### Step 5: Update Environment Variables
 1. In Render dashboard → Web Service → **"Environment"**
-2. Add these environment variables:
+2. Add/Update these environment variables:
 
 | Variable | Value |
 |----------|-------|
@@ -49,47 +50,63 @@ git push origin main
 | `DJANGO_DEBUG` | `False` |
 | `DJANGO_USE_WHITENOISE` | `True` |
 | `DB_ENGINE` | `postgresql` |
+| `DJANGO_SECURE_SSL_REDIRECT` | `True` |
 
-3. Click **"Save"** - service will redeploy
+3. Click **"Save"** - service will redeploy automatically
 
-### Step 6: Run Initial Setup
-After deployment completes:
-
-1. In Render dashboard → Web Service → **"Shell"**
-2. Run migrations:
-   ```bash
-   python manage.py migrate
-   ```
-3. Create superuser:
-   ```bash
-   python manage.py createsuperuser
-   ```
-4. (Optional) Load sample data if you have fixtures
-
-### Step 7: Verify Deployment
+### Step 6: Verify Deployment
 1. Visit `https://yourdomain.onrender.com`
 2. Test login at `/admin`
 3. Check that database is working
+4. Monitor logs for any errors
+
+### Step 7: (Optional) Create Superuser Manually
+If migrations ran but you need to create a superuser:
+
+1. In Render dashboard → Web Service → **"Shell"**
+2. Run:
+   ```bash
+   python manage.py createsuperuser
+   ```
+
+## What Happens Automatically
+
+When the app starts on Render:
+1. `start.sh` runs automatically
+2. Database migrations are applied
+3. Static files are collected
+4. Gunicorn server starts
 
 ## Troubleshooting
 
-### Deployment fails during collectstatic
-- Ensure `STATIC_ROOT` and `STATICFILES_DIRS` are correct in settings.py
-- Check that static files exist in the correct directories
+### Deployment fails during build
+- Check Render logs: **"Logs"** tab
+- Ensure all requirements are in `requirements.txt`
+- Verify `start.sh` has correct permissions
 
 ### Database migration errors
-- Check PostgreSQL service is created
+- Check PostgreSQL service is created in render.yaml
 - Verify `DATABASE_URL` environment variable is set
-- Run migrations manually in Shell: `python manage.py migrate`
+- View logs to see specific error messages
+- Manual migration: Go to Shell and run `python manage.py migrate`
 
 ### 502 Bad Gateway
-- Check application logs: **"Logs"** tab
-- Ensure all required packages are in `requirements.txt`
-- Verify gunicorn is running correctly
+- Check application logs in Render dashboard
+- Ensure `DJANGO_ALLOWED_HOSTS` includes your Render domain
+- Verify all environment variables are set correctly
+- Check that SECRET_KEY is set and not empty
 
 ### Static files not loading
 - Ensure `DJANGO_USE_WHITENOISE` is set to `True`
-- Run collectstatic: `python manage.py collectstatic --noinput`
+- Check that `STATIC_ROOT` and `STATICFILES_DIRS` are correct
+- Verify static files exist in your repository
+- Clear browser cache and hard refresh (Ctrl+Shift+R)
+
+### Can't login to admin panel
+- Verify migrations ran successfully (check logs)
+- Create superuser via Shell tab if needed
+- Check `DJANGO_DEBUG` is `False` for production
+- Verify `DJANGO_ALLOWED_HOSTS` is correct
 
 ## Important Notes
 - Free tier services sleep after 15 minutes of inactivity
@@ -97,3 +114,6 @@ After deployment completes:
 - For production, consider upgrading to paid plans
 - Keep backups of important data
 - Update `yourdomain.onrender.com` with your actual Render URL everywhere it appears
+- Never commit `.env` file with sensitive keys to GitHub
+- Use environment variables for all sensitive configuration
+
