@@ -2,8 +2,8 @@
 # Generate a strong secret key for production and keep it private.
 DJANGO_SECRET_KEY=replace-with-your-secret-key
 DJANGO_DEBUG=True
-# Local and PythonAnywhere hosts example
-DJANGO_ALLOWED_HOSTS=127.0.0.1 localhost collegeconnect.pythonanywhere.com
+# Local development hosts example
+DJANGO_ALLOWED_HOSTS=127.0.0.1 localhost
 
 # Database configuration
 DB_ENGINE=sqlite3

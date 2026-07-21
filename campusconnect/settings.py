@@ -2,12 +2,13 @@ import os
 from pathlib import Path
 from django.core.management.utils import get_random_secret_key
 from dotenv import load_dotenv
+import dj_database_url
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / '.env')
 
 SECRET_KEY = os.getenv('DJANGO_SECRET_KEY', get_random_secret_key())
-DEBUG = os.getenv('DJANGO_DEBUG', 'False') == 'True'
+DEBUG = os.getenv('DJANGO_DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = [host.strip() for host in os.getenv('DJANGO_ALLOWED_HOSTS', '127.0.0.1 localhost').split() if host.strip()]
 ALLOWED_HOSTS = list(dict.fromkeys(ALLOWED_HOSTS))
 
@@ -78,8 +79,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'campusconnect.wsgi.application'
 
 DB_ENGINE = os.getenv('DB_ENGINE', 'sqlite3')
+DATABASE_URL = os.getenv('DATABASE_URL')
 
-if DB_ENGINE == 'mysql':
+if DATABASE_URL:
+    # Use DATABASE_URL if available (Render, Heroku, etc.)
+    DATABASES = {
+        'default': dj_database_url.config(default=DATABASE_URL, conn_max_age=600)
+    }
+elif DB_ENGINE == 'mysql':
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.mysql',

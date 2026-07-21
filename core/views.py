@@ -236,6 +236,7 @@ def register(request):
             user.admin_approved = True
             user.approval_status = 'approved'
             user.save()
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
             login(request, user)
             messages.success(request, 'Registration successful. You are now logged in.')
             return redirect(next_url or 'core:home')
